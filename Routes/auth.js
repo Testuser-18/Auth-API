@@ -116,9 +116,14 @@ catch(err){
         res.status(500).send({error:err.message})
     }
 })
-router.post('/forgotpassword',async (req,res)=>{
+router.post('/forgotpassword',[
+  body('email','enter valid email id').isEmail(),
+], async (req,res)=>{
+  const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).send({ error: "Please Fill in All Fields",errors });
+    }
          try{
-       
           let user=await User.findOne({email:req.body.email});
           if(!user){
              return res.status(400).send({error:'Please Enter Valid Mail-Id'});
@@ -153,7 +158,15 @@ router.post('/forgotpassword',async (req,res)=>{
           res.status(500).send({error:err.message})
          }
 })
-router.post('/changepassword',async (req,res)=>{
+router.post('/changepassword'
+,[
+   body('email','enter valid email id').isEmail(),
+  body('password','password length must be greater than 4').isLength({ min: 4 }),
+], async (req,res)=>{
+  const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).send({ error: "Please Fill in All Fields",errors });
+    }
   try{
    let user=await User.findOne({email:req.body.email});
    if(!user){
@@ -176,7 +189,11 @@ router.post('/changepassword',async (req,res)=>{
   }
 })
 
-router.post('/change-password-verification', async (req, res) => {
+router.post('/change-password-verification'
+,[
+   body('email','enter valid email id').isEmail(),
+   body('otp','enter valid email id').isLength({min:6, max:6}),
+], async (req, res) => {
   try {
     const {otp,email } = req.body;
     const storedOTP = otpMap.get(email);
