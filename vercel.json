@@ -1,0 +1,10 @@
+{
+    "version": 2,
+    "name": "Authentication",
+    "builds": [
+       { "src": "*.js", "use": "@vercel/node" }
+    ],
+    "routes": [
+       { "src": "/(.*)", "dest": "/" }
+    ]
+ }
